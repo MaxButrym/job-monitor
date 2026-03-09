@@ -51,3 +51,7 @@ venv/
 __pycache__/
 .env
 .idea
+venv/
+__pycache__/
+.env
+*.pyc
