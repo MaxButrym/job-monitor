@@ -24,3 +24,22 @@ Thumbs.db
 dist/
 build/
 *.egg-info/
+# IDE
+.idea/
+*.iml
+
+# Виртуальное окружение
+.venv/
+venv/
+env/
+
+# Файлы Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Логи и временные файлы
+*.log
+.DS_Store
+Thumbs.db
