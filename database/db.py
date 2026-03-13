@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 DATABASE_URL = "postgresql://appuser:apppassword@localhost:5432/jobmonitor"
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, echo=True)
 
 SessionLocal = sessionmaker(
     autocommit=False,

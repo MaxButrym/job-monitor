@@ -7,4 +7,12 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
-    email = Column(String)
+    email = Column(String, unique=True)
+
+
+class Job(Base):
+
+    __tablename__ = "jobs"
+
+    id = Column(Integer, primary_key=True)
+    title = Column(String)

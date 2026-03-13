@@ -1,8 +1,8 @@
+import database.models
 from database.db import engine, Base
-from database import models
 
 print("Создание таблиц...")
 
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(engine)
 
-print("Таблицы созданы!")
+print("Таблицы успешно созданы!")
