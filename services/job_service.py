@@ -1,7 +1,7 @@
 from database.db import SessionLocal
 from database.models import Job, Company
 from sqlalchemy.exc import IntegrityError
-
+from services.telegram_service import send_job_notification
 
 def save_jobs(jobs):
 
@@ -37,8 +37,9 @@ def save_jobs(jobs):
         try:
 
             db.add(job)
-
             db.commit()
+
+            send_job_notification(job_data)
 
             saved += 1
 
@@ -52,3 +53,5 @@ def save_jobs(jobs):
 
     print(f"Добавлено вакансий: {saved}")
     print(f"Пропущено (дубликаты): {skipped}")
+
+    return saved
