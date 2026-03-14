@@ -16,8 +16,18 @@ def parse_jobs():
 
         title = item.select_one(".title").text.strip()
 
+        company = item.select_one(".company").text.strip()
+
+        location = item.select_one(".location").text.strip()
+
+        link = item.select_one("a")["href"]
+
         jobs.append({
-            "title": title
+            "title": title,
+            "company": company,
+            "location": location,
+            "link": link,
+            "company_rating": None
         })
 
     return jobs

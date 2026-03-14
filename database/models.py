@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Float
 from .db import Base
 
 
@@ -15,4 +15,9 @@ class Job(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    title = Column(String, nullable=False, unique=True)
+    title = Column(String, nullable=False)
+    company = Column(String)
+    location = Column(String)
+    link = Column(String, unique=True)
+
+    company_rating = Column(Float)

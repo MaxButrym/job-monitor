@@ -13,7 +13,11 @@ def save_jobs(jobs):
     for job_data in jobs:
 
         job = Job(
-            title=job_data["title"]
+            title=job_data["title"],
+            company=job_data["company"],
+            location=job_data["location"],
+            link=job_data["link"],
+            company_rating=job_data["company_rating"]
         )
 
         try:
