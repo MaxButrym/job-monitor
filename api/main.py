@@ -14,6 +14,9 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/")
+def root():
+    return {"message": "job-monitor API работает"}
 
 @app.get("/jobs")
 def get_jobs():
@@ -31,6 +34,28 @@ def get_jobs():
             "location": job.location,
             "url": job.link
         })
+
+    db.close()
+
+    return result
+
+@app.get("/jobs/{job_id}")
+def get_job(job_id: int):
+
+    db: Session = SessionLocal()
+
+    job = db.query(Job).filter(Job.id == job_id).first()
+
+    if not job:
+        db.close()
+        return {"error": "Job not found"}
+
+    result = {
+        "id": job.id,
+        "title": job.title,
+        "location": job.location,
+        "url": job.link
+    }
 
     db.close()
 
