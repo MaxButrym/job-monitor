@@ -1,23 +1,34 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
+
 from .db import Base
 
 
-class User(Base):
-    __tablename__ = "users"
+class Company(Base):
+
+    __tablename__ = "companies"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    email = Column(String, unique=True)
+
+    name = Column(String, unique=True, nullable=False)
+
+    rating = Column(Float)
+
+    jobs = relationship("Job", back_populates="company")
 
 
 class Job(Base):
+
     __tablename__ = "jobs"
 
     id = Column(Integer, primary_key=True, index=True)
 
     title = Column(String, nullable=False)
-    company = Column(String)
+
     location = Column(String)
+
     link = Column(String, unique=True)
 
-    company_rating = Column(Float)
+    company_id = Column(Integer, ForeignKey("companies.id"))
+
+    company = relationship("Company", back_populates="jobs")

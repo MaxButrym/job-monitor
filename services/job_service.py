@@ -1,5 +1,5 @@
 from database.db import SessionLocal
-from database.models import Job
+from database.models import Job, Company
 from sqlalchemy.exc import IntegrityError
 
 
@@ -12,24 +12,43 @@ def save_jobs(jobs):
 
     for job_data in jobs:
 
+        company = db.query(Company).filter(
+            Company.name == job_data["company"]
+        ).first()
+
+        if not company:
+
+            company = Company(
+                name=job_data["company"],
+                rating=job_data["company_rating"]
+            )
+
+            db.add(company)
+            db.commit()
+            db.refresh(company)
+
         job = Job(
             title=job_data["title"],
-            company=job_data["company"],
             location=job_data["location"],
             link=job_data["link"],
-            company_rating=job_data["company_rating"]
+            company_id=company.id
         )
 
         try:
+
             db.add(job)
+
             db.commit()
+
             saved += 1
 
         except IntegrityError:
+
             db.rollback()
+
             skipped += 1
 
     db.close()
 
-    print(f"Добавлено: {saved}")
+    print(f"Добавлено вакансий: {saved}")
     print(f"Пропущено (дубликаты): {skipped}")
