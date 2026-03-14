@@ -1,19 +1,15 @@
 from parser.job_parser import parse_jobs
 from services.job_service import save_jobs
-from services.telegram_service import send_telegram_message
 
 
-print("Запуск парсера...")
-send_telegram_message("🚀 Парсер запущен")
-jobs = parse_jobs()
+def main():
 
-print(f"Найдено вакансий: {len(jobs)}")
+    print("🚀 Запуск парсера...")
 
-added = save_jobs(jobs)
+    jobs = parse_jobs()
 
-if added > 0:
-    send_telegram_message(f"🔥 Добавлено новых вакансий: {added}")
-else:
-    send_telegram_message("ℹ️ Новых вакансий по вашим фильтрам не найдено")
+    save_jobs(jobs)
 
-send_telegram_message(f"✅ Парсер завершил работу. Новых вакансий: {added}")
+
+if __name__ == "__main__":
+    main()

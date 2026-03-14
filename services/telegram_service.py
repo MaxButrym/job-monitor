@@ -1,5 +1,12 @@
+import logging
+from datetime import datetime
 from telegram import Bot
-import requests
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+import asyncio
+
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 TOKEN = "8723145759:AAESo6l1Ijvp634dVsm2O0dV-bn3imLN_mA"
@@ -11,29 +18,77 @@ bot = Bot(token=TOKEN)
 
 def send_job_notification(job):
 
+    title = job["title"]
+    company = job["company"]
+    location = job["location"]
+    rating = job["company_rating"]
+    link = job["link"]
+
+    if rating is None:
+        rating = "нет данных"
+
     message = f"""
-Новая вакансия
+    ━━━━━━━━━━━━━━
 
-{job["title"]}
+    🚀 <b>Новая Python вакансия</b>
 
-Компания: {job["company"]}
-Локация: {job["location"]}
+    💼 <b>{title}</b>
 
-{job["link"]}
+    🏢 Компания: <b>{company}</b>
+    ⭐ Рейтинг: <b>{rating}</b>
+
+    📍 Локация: <b>{location}</b>
+
+    ━━━━━━━━━━━━━━
+    """
+
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                "🔎 Открыть вакансию",
+                url=link
+            )
+        ]
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    asyncio.run(
+        bot.send_message(
+            chat_id=CHAT_ID,
+            text=message,
+            parse_mode="HTML",
+            reply_markup=reply_markup
+        )
+    )
+    logging.info("Telegram уведомление о вакансии отправлено")
+
+
+
+
+def send_parser_report(total, new, skipped):
+
+    now = datetime.now().strftime("%H:%M")
+
+    message = f"""
+━━━━━━━━━━━━━━
+
+🤖 <b>Проверка вакансий завершена</b>
+
+🔎 Всего найдено: <b>{total}</b>
+🆕 Новых вакансий: <b>{new}</b>
+♻️ Дубликатов: <b>{skipped}</b>
+
+⏰ Время проверки: <b>{now}</b>
+
+━━━━━━━━━━━━━━
 """
 
-    bot.send_message(chat_id=CHAT_ID, text=message)
-
-
-def send_telegram_message(text):
-
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-
-    data = {
-        "chat_id": CHAT_ID,
-        "text": text
-    }
-
-    response = requests.post(url, json=data)
-
-    return response.json()
+    asyncio.run(
+        bot.send_message(
+            chat_id=CHAT_ID,
+            text=message,
+            parse_mode="HTML"
+        )
+    )
+    logging.info("Telegram отчет парсера отправлен")
