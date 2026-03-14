@@ -1,18 +1,19 @@
+from config import KEYWORDS, LOCATIONS
+
+
 def filter_jobs(jobs):
 
     filtered = []
 
     for job in jobs:
 
-        title = job["title"].lower()
-        location = job["location"].lower()
+        title = job.get("title", "").lower()
+        location = job.get("location", "").lower()
 
-        if "python" in title:
+        keyword_match = any(keyword in title for keyword in KEYWORDS)
+        location_match = any(loc in location for loc in LOCATIONS)
 
-            filtered.append(job)
-
-        elif "remote" in location:
-
+        if keyword_match and location_match:
             filtered.append(job)
 
     return filtered
