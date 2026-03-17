@@ -3,17 +3,16 @@ from datetime import datetime
 from telegram import Bot
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import asyncio
-
+from config import TELEGRAM_TOKEN
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-TOKEN = "8723145759:AAESo6l1Ijvp634dVsm2O0dV-bn3imLN_mA"
 CHAT_ID = "5687839275"
 
 
-bot = Bot(token=TOKEN)
+bot = Bot(token=TELEGRAM_TOKEN)
 
 
 def send_job_notification(job):
