@@ -1,27 +1,26 @@
-import schedule
-import time
+import asyncio
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from parser.job_parser import parse_jobs
-from services.job_service import save_jobs
-
-
-def job():
-
-    print("Запуск парсера...")
-
-    jobs = parse_jobs()
-
-    print(f"Найдено вакансий: {len(jobs)}")
-
-    save_jobs(jobs)
+from main import main
 
 
-print("Scheduler запущен...")
+async def run_job():
+    print("🚀 Запуск парсера...")
+    await main()
 
-job()
 
-schedule.every(30).minutes.do(job)
+async def start_scheduler():
+    scheduler = AsyncIOScheduler()
+    
+    scheduler.add_job(run_job, "interval", minutes=1)  # тест
+    
+    scheduler.start()
+    print("✅ Scheduler запущен")
+    await run_job()
+    # держим приложение живым
+    while True:
+        await asyncio.sleep(60)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+
+if __name__ == "__main__":
+    asyncio.run(start_scheduler())

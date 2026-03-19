@@ -18,15 +18,27 @@ def get_db():
 def root():
     return {"message": "job-monitor API работает"}
 
-@app.get("/jobs")
-def get_jobs():
+from typing import Optional
+from fastapi import Query
 
+@app.get("/jobs")
+def get_jobs(
+    keyword: Optional[str] = Query(None),
+    location: Optional[str] = Query(None)
+):
     db: Session = SessionLocal()
 
-    jobs = db.query(Job).all()
+    query = db.query(Job)
+
+    if keyword:
+        query = query.filter(Job.title.ilike(f"%{keyword}%"))
+
+    if location:
+        query = query.filter(Job.location.ilike(f"%{location}%"))
+
+    jobs = query.all()
 
     result = []
-
     for job in jobs:
         result.append({
             "id": job.id,
