@@ -2,7 +2,7 @@ from config import KEYWORDS, LOCATIONS
 
 
 def filter_jobs(jobs):
-
+    return jobs
     filtered = []
 
     for job in jobs:

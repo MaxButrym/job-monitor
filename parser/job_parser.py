@@ -12,8 +12,7 @@ def parse_jobs():
 
     jobs = []
 
-    for item in soup.select(".card-content"):
-
+    for i, item in enumerate(soup.select(".card-content")):
         title = item.select_one(".title").text.strip()
 
         company = item.select_one(".company").text.strip()
@@ -21,12 +20,14 @@ def parse_jobs():
         location = item.select_one(".location").text.strip()
 
         link = item.select_one("a")["href"]
-
+        unique_link = f"{link}_{i}"
+        
         jobs.append({
             "title": title,
             "company": company,
             "location": location,
             "link": link,
+            "external_id": f"{link}_{i}",  # 👈 НОВОЕ ПОЛЕ
             "company_rating": None
         })
 

@@ -27,8 +27,10 @@ class Job(Base):
 
     location = Column(String)
 
-    link = Column(String, unique=True)
-
+    link = Column(String)
+    
+    external_id = Column(String, unique=True)
+    
     company_id = Column(Integer, ForeignKey("companies.id"))
 
     company = relationship("Company", back_populates="jobs")

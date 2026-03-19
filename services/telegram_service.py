@@ -2,7 +2,6 @@ import logging
 from datetime import datetime
 from telegram import Bot
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-import asyncio
 from config import TELEGRAM_TOKEN
 
 
@@ -52,13 +51,11 @@ def send_job_notification(job):
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    asyncio.run(
-        bot.send_message(
-            chat_id=CHAT_ID,
-            text=message,
-            parse_mode="HTML",
-            reply_markup=reply_markup
-        )
+    bot.send_message(
+        chat_id=CHAT_ID,
+        text=message,
+        parse_mode="HTML",
+        reply_markup=reply_markup
     )
     logging.info("Telegram уведомление о вакансии отправлено")
 
@@ -83,11 +80,29 @@ def send_parser_report(total, new, skipped):
 ━━━━━━━━━━━━━━
 """
 
-    asyncio.run(
-        bot.send_message(
-            chat_id=CHAT_ID,
-            text=message,
-            parse_mode="HTML"
-        )
+
+    bot.send_message(
+        chat_id=CHAT_ID,
+        text=message,
+        parse_mode="HTML"
     )
     logging.info("Telegram отчет парсера отправлен")
+    
+async def send_jobs_summary(jobs):
+    message = "🔥 Найдено новых вакансий:\n\n"
+
+    for i, job in enumerate(jobs[:10], 1):  # ограничим 10
+        message += f"{i}. {job['title']} — {job['location']}\n"
+
+    if len(jobs) > 10:
+        message += f"\n...и ещё {len(jobs) - 10}"
+
+    await bot.send_message(
+        chat_id=CHAT_ID,
+        text=message
+    )
+async def send_no_jobs_message():
+    await bot.send_message(
+        chat_id=CHAT_ID,
+        text="❌ Новых вакансий нет"
+    )
