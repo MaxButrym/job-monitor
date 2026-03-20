@@ -29,3 +29,9 @@ class JobList(BaseModel):
     
     class Config:
         from_attributes = True         
+class JobListResponse(BaseModel):
+    total: int
+    items: list[JobList]
+    
+    class Config:
+        from_attributes = True

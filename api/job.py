@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session, joinedload
 from typing import Optional
 from database.db import SessionLocal
 from database import models
-from schemas.job import Job, JobList
+from schemas.job import Job, JobList, JobListResponse
 
 
 router = APIRouter()
@@ -19,7 +19,7 @@ def get_db():
 
 
 # ✅ ВАЖНО: response_model
-@router.get("/jobs", response_model=list[JobList])
+@router.get("/jobs", response_model=JobListResponse)
 def get_jobs(
     keyword: Optional[str] = None,
     location: Optional[str] = None,
@@ -62,7 +62,14 @@ def get_jobs(
         
         
     query = query.offset(offset).limit(limit)
-    return query.all()
+    total = query.count()
+    
+    jobs = query.offset(offset).limit(limit).all()
+    
+    return {
+        "total": total,
+        "items": jobs
+    }
 
 
 # ✅ исправлена скобка
