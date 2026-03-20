@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session, joinedload
-from typing import Optional
 
+from typing import Optional
 from database.db import SessionLocal
 from database import models
 from schemas.job import Job, JobList
@@ -25,7 +25,7 @@ def get_jobs(
     location: Optional[str] = None,
     company: Optional[str] = None,
     sort_by: Optional[str] = None,
-    limit: int = 10,
+    limit: int = Query(10, ge=1, le=50),
     offset: int = 0,
     db: Session = Depends(get_db)
 ):
