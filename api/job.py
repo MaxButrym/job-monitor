@@ -22,6 +22,7 @@ def get_db():
 def get_jobs(
     keyword: Optional[str] = None,
     location: Optional[str] = None,
+    sort_by: Optional[str] = None,
     limit: int = 10,
     offset: int = 0,
     db: Session = Depends(get_db)
@@ -34,6 +35,16 @@ def get_jobs(
 
     if location:
         query = query.filter(models.Job.location.ilike(f"%{location}%"))
+    
+    if sort_by:
+        if sort_by == "title":
+            query = query.order_by(models.Job.title)
+        elif sort_by == "location":
+            query = query.order_by(models.Job.location)
+        elif sort_by == "id":
+            query = query.order_by(models.Job.id)    
+        
+        
     query = query.offset(offset).limit(limit)
     return query.all()
 
