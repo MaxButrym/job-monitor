@@ -4,7 +4,8 @@ from typing import Optional
 
 from database.db import SessionLocal
 from database import models
-from schemas.job import Job
+from schemas.job import Job, JobList
+
 
 router = APIRouter()
 
@@ -18,7 +19,7 @@ def get_db():
 
 
 # ✅ ВАЖНО: response_model
-@router.get("/jobs", response_model=list[Job])
+@router.get("/jobs", response_model=list[JobList])
 def get_jobs(
     keyword: Optional[str] = None,
     location: Optional[str] = None,
@@ -29,7 +30,7 @@ def get_jobs(
     db: Session = Depends(get_db)
 ):
 
-    query = db.query(models.Job).join(models.Company).options(joinedload(models.Job.company))
+    query = db.query(models.Job).join(models.Job.company).options(joinedload(models.Job.company))
     
     if keyword:
         query = query.filter(models.Job.title.ilike(f"%{keyword}%"))

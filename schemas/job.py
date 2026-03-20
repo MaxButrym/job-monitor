@@ -20,3 +20,12 @@ class Job(JobBase):
 
     class Config:
         from_attributes = True
+        
+class JobList(BaseModel):
+    id: int
+    title: str
+    location: Optional[str]
+    company: Optional[Company]
+    
+    class Config:
+        from_attributes = True         
