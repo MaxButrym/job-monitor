@@ -22,19 +22,23 @@ def get_db():
 def get_jobs(
     keyword: Optional[str] = None,
     location: Optional[str] = None,
+    company: Optional[str] = None,
     sort_by: Optional[str] = None,
     limit: int = 10,
     offset: int = 0,
     db: Session = Depends(get_db)
 ):
-    print("🔥 MY JOBS ENDPOINT WORKING")
-    query = db.query(models.Job).options(joinedload(models.Job.company))
 
+    query = db.query(models.Job).join(models.Company).options(joinedload(models.Job.company))
+    
     if keyword:
         query = query.filter(models.Job.title.ilike(f"%{keyword}%"))
 
     if location:
         query = query.filter(models.Job.location.ilike(f"%{location}%"))
+    
+    if company:
+        query = query.filter(models.Company.name.ilike(f"%{company}%"))
     
     if sort_by:
         if sort_by == "title":
