@@ -42,12 +42,23 @@ def get_jobs(
         query = query.filter(models.Company.name.ilike(f"%{company}%"))
     
     if sort_by:
-        if sort_by == "title":
-            query = query.order_by(models.Job.title)
-        elif sort_by == "location":
-            query = query.order_by(models.Job.location)
-        elif sort_by == "id":
-            query = query.order_by(models.Job.id)    
+        desc = sort_by.startswith("-")
+        field = sort_by.lstrip("-")
+        
+        if field == "title":
+            column = models.Job.title
+        elif field == "location":
+            column = models.Job.location
+        elif field == "id":
+            column = models.Job.id
+        else:
+            column = None   
+            
+        if column is not None:
+            if desc:
+                query = query.order_by(column.desc())
+            else:
+                query = query.order_by(column)
         
         
     query = query.offset(offset).limit(limit)
