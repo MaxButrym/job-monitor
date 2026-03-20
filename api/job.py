@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session, joinedload
 
 from typing import Optional
@@ -75,6 +75,10 @@ def get_jobs(
 # ✅ исправлена скобка
 @router.get("/jobs/{job_id}", response_model=Job)
 def get_job(job_id: int, db: Session = Depends(get_db)):
-    return db.query(models.Job).options(
+    job = db.query(models.Job).options(
         joinedload(models.Job.company)
     ).filter(models.Job.id == job_id).first()
+    
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return job
