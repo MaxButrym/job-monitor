@@ -1,23 +1,20 @@
-from database.db import SessionLocal
-from database.models import Job, Company
+from database.db import SessionLocal # Фабрика для создания сессий работы с базой данных
+from database.models import Job, Company # ORM модели таблиц: вакансии и компании
 from sqlalchemy.exc import IntegrityError
-from services.telegram_service import send_job_notification, send_parser_report
-import time
-from services.telegram_service import send_jobs_summary, send_no_jobs_message
 
-async def save_jobs(jobs):
 
+def save_jobs(jobs):
     db = SessionLocal()
 
     saved = 0
     skipped = 0
     new_jobs = []
+    total = len(jobs)
 
     for job_data in jobs:
-
         print(f"🔍 Проверяю: {job_data['title']}")
 
-        # 1. компания
+        # 1. проверка / создание компании
         company = db.query(Company).filter(
             Company.name == job_data["company"]
         ).first()
@@ -31,7 +28,7 @@ async def save_jobs(jobs):
             db.commit()
             db.refresh(company)
 
-        # 2. 🔥 СНАЧАЛА проверка дубликата
+        # 2. проверка дубликата
         existing_job = db.query(Job).filter(
             Job.external_id == job_data["external_id"]
         ).first()
@@ -41,7 +38,7 @@ async def save_jobs(jobs):
             skipped += 1
             continue
 
-        # 3. создаём job
+        # 3. создание вакансии
         job = Job(
             title=job_data["title"],
             location=job_data["location"],
@@ -65,10 +62,4 @@ async def save_jobs(jobs):
 
     db.close()
 
-    # 🔥 ВАЖНО: отправка ОДИН РАЗ
-    if new_jobs:
-        await send_jobs_summary(new_jobs)
-    else:
-        await send_no_jobs_message()     
-    print(f"Добавлено вакансий: {saved}")
-    print(f"Пропущено (дубликаты): {skipped}")
+    return total, saved, skipped, new_jobs
