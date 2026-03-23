@@ -2,8 +2,10 @@ import asyncio
 
 from fastapi import FastAPI
 from api.job import router as job_router
+from auth.router import router as auth_router
 
-from database.db import engine
+from database.db import Base, engine
+from models.user import User
 from database import models
 from parser.job_parser import parse_jobs
 from services.job_filter import filter_jobs
@@ -11,7 +13,10 @@ from services.job_service import save_jobs
 
 app = FastAPI()
 
+Base.metadata.create_all(bind=engine)
 app.include_router(job_router)
+app.include_router(auth_router)
+
 
 async def main():
     models.Base.metadata.create_all(bind=engine)
